@@ -1,11 +1,11 @@
-// Naive solution checking every possible substr
-
-function isPalindrome(s: string): boolean {
-    for (let left = 0, right = s.length - 1; left < right; ++left,--right) {
-        if (s[left] !== s[right]) {
+function isPalindrome(s: string, left: number = 0, right: number = s.length - 1): boolean {
+    // console.log('isPalindrome', { s, left, right, substr: s.substring(left, right) });
+    while (left < right) {
+        if (s[left++] !== s[right--]) {
             return false;
         }
     }
+    
     return true;
 }
 
@@ -46,27 +46,45 @@ function explodeSubstrings(str: string): string[] {
     return substrs;
 }
 
+function findAllPalindromes(str: string): string[] {
+    let index = 0;
+    let distance = 1;
+
+    const results = [];
+    while (distance <= str.length) {
+        while ((index + distance) <= str.length) {
+            const substr = str.substring(index, index + distance);
+            if (isPalindrome(substr)) {
+                results.push(substr);
+            }
+            ++index;
+        }
+        index = 0;
+        ++distance;
+    }
+    return results;
+}
+
 function longestPalindrome(s: string): string {
-    // special case where entire string is a palindrome
     if (!s.length) {
         return '';
     }
     
+    // special case where entire string is a palindrome
     if (isPalindrome(s)) {
         return s;
     }
 
-    const allSubstrs: string[] = explodeSubstrings(s);
+    const allPalindromes: string[] = findAllPalindromes(s);
+//    console.log({ allPalindromes })
     let longest: string = '';
     
-    for (let index = 0; ++index < allSubstrs.length;) {
-        const substr = allSubstrs[index];
+    for (let index = 0; ++index < allPalindromes.length;) {
+        const palindrome = allPalindromes[index];
         
-        if (isPalindrome(substr)) {
-            longest = longest.length > substr.length
-                ? longest
-                : substr;
-        }
+        longest = longest.length > palindrome.length
+            ? longest
+            : palindrome;
     }
     
     return longest;
