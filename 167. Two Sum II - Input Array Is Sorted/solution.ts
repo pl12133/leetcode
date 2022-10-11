@@ -1,15 +1,20 @@
 function twoSum(numbers: number[], target: number): number[] {
-    const map = new Map();  
-    for (let index = 0; index++ < numbers.length;) {
-        map.set(target - numbers[index], index);
-    }
-    
-    for (let index = numbers.length - 1; 0 < index--;) {
-        const otherIndex = map.get(numbers[index]);
-        if (otherIndex && otherIndex !== index) {
-            return index < otherIndex
-                ? [index + 1, otherIndex + 1]
-                : [otherIndex + 1, index + 1];
+    let left = 0;
+    let right = numbers.length - 1;
+    let lastSum = -1;
+
+    while (left < right) {
+        const sum = numbers[left] + numbers[right];
+        if (sum === target) {
+            return [ left + 1, right + 1 ];
         }
-    }    
-}
+
+        if (sum < target) {
+            left++;
+        } else if (sum > target) {
+            right--;
+        }
+
+    }
+    return [];
+};
